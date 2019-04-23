@@ -54,7 +54,9 @@ function getUnrevealedAdjacentCells(
   board: Board
 ): BoardCell[] {
   return getAdjacentCells(cell, board).filter(
-    c => !isCellRevealed(c, board).getOrElse(true)
+    c =>
+      !isCellRevealed(c, board).getOrElse(true) &&
+      !isCellFlagged(c, board).getOrElse(true)
   );
 }
 

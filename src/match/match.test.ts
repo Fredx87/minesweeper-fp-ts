@@ -34,9 +34,10 @@ describe("match test", () => {
       });
   });
 
-  test("clicking on an unrevealed cell reveals all adjacent empty cells", () => {
+  test("clicking on an unrevealed cell reveals all adjacent empty and unflagged cells", () => {
     placeMineInCell(boardCell(1, 3), match.board)
       .chain(b => placeMineInCell(boardCell(3, 1), b))
+      .chain(b => setCellFlagged(boardCell(2, 2), b))
       .map(b => {
         match.board = countAllAdjacentMines(b);
         const res = cellClick(boardCell(0, 0), match);
@@ -48,7 +49,7 @@ describe("match test", () => {
         expect(isCellRevealed(boardCell(1, 2), res.board)).toEqual(some(true));
         expect(isCellRevealed(boardCell(2, 0), res.board)).toEqual(some(true));
         expect(isCellRevealed(boardCell(2, 1), res.board)).toEqual(some(true));
-        expect(isCellRevealed(boardCell(2, 2), res.board)).toEqual(some(true));
+        expect(isCellRevealed(boardCell(2, 2), res.board)).toEqual(some(false));
         expect(isCellRevealed(boardCell(0, 3), res.board)).toEqual(some(false));
         expect(isCellRevealed(boardCell(3, 0), res.board)).toEqual(some(false));
         expect(isCellRevealed(boardCell(5, 5), res.board)).toEqual(some(false));
