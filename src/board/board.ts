@@ -106,6 +106,15 @@ export function isCellEmpty(cell: BoardCell, board: Board): Option<boolean> {
   );
 }
 
+export function getAdjacentMinesCount(
+  cell: BoardCell,
+  board: Board
+): Option<number> {
+  return getBoardCellIndex(cell, board).chain(i =>
+    some(board.adjacentMinesCount[i])
+  );
+}
+
 export function getAdjacentCells(cell: BoardCell, board: Board): BoardCell[] {
   if (!isValidBoardCell(cell, board)) {
     return [];
