@@ -73,10 +73,13 @@ export function isCellFlagged(cell: BoardCell, board: Board): Option<boolean> {
   );
 }
 
-export function setCellFlagged(cell: BoardCell, board: Board): Option<Board> {
+export function toggleCellFlagged(
+  cell: BoardCell,
+  board: Board
+): Option<Board> {
   return getBoardCellIndex(cell, board).chain(i => {
     const flaggedIndexes = new Set(board.flaggedIndexes);
-    flaggedIndexes.add(i);
+    flaggedIndexes.has(i) ? flaggedIndexes.delete(i) : flaggedIndexes.add(i);
     return some({ ...board, flaggedIndexes });
   });
 }

@@ -10,8 +10,8 @@ import {
   isCellEmpty,
   isCellFlagged,
   isCellRevealed,
-  setCellFlagged,
-  setCellRevealed
+  setCellRevealed,
+  toggleCellFlagged
 } from "../board/board";
 
 export type MatchState = "playing" | "win" | "game_over";
@@ -114,11 +114,12 @@ export function cellClick(cell: BoardCell, match: Match): Match {
 }
 
 export function cellRightClick(cell: BoardCell, match: Match): Match {
-  if (isCellRevealed(cell, match.board)) {
+  if (isCellRevealed(cell, match.board).getOrElse(false)) {
     return match;
   }
+
   return {
-    board: setCellFlagged(cell, match.board).getOrElse(match.board),
+    board: toggleCellFlagged(cell, match.board).getOrElse(match.board),
     state: match.state
   };
 }

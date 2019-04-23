@@ -12,8 +12,8 @@ import {
   isCellFlagged,
   isCellRevealed,
   placeMineInCell,
-  setCellFlagged,
-  setCellRevealed
+  setCellRevealed,
+  toggleCellFlagged
 } from "./board";
 
 describe("create board", () => {
@@ -96,10 +96,13 @@ describe("board functions", () => {
     });
   });
 
-  test("isCellFlagged / setCellFlagged", () => {
+  test("isCellFlagged / toggleCellFlagged", () => {
     expect(isCellFlagged(boardCell(4, 6), board)).toEqual(some(false));
-    setCellFlagged(boardCell(4, 6), board).map(newBoard => {
+    toggleCellFlagged(boardCell(4, 6), board).map(newBoard => {
       expect(isCellFlagged(boardCell(4, 6), newBoard)).toEqual(some(true));
+      toggleCellFlagged(boardCell(4, 6), newBoard).map(b => {
+        expect(isCellFlagged(boardCell(4, 6), b)).toEqual(some(false));
+      });
     });
   });
 

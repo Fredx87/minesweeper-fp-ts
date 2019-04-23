@@ -7,8 +7,8 @@ import {
   isCellFlagged,
   isCellRevealed,
   placeMineInCell,
-  setCellFlagged,
-  setCellRevealed
+  setCellRevealed,
+  toggleCellFlagged
 } from "../board/board";
 import { cellClick, cellRightClick, Match } from "./match";
 
@@ -37,7 +37,7 @@ describe("match test", () => {
   test("clicking on an unrevealed cell reveals all adjacent empty and unflagged cells", () => {
     placeMineInCell(boardCell(1, 3), match.board)
       .chain(b => placeMineInCell(boardCell(3, 1), b))
-      .chain(b => setCellFlagged(boardCell(2, 2), b))
+      .chain(b => toggleCellFlagged(boardCell(2, 2), b))
       .map(b => {
         match.board = countAllAdjacentMines(b);
         const res = cellClick(boardCell(0, 0), match);
@@ -75,13 +75,18 @@ describe("match test", () => {
   test("clicking on a flagged cell with mine should not reveal the cell", () => {
     placeMineInCell(boardCell(0, 1), match.board)
       .chain(b => placeMineInCell(boardCell(0, 2), b))
-      .chain(b => setCellFlagged(boardCell(0, 1), b))
+      .chain(b => toggleCellFlagged(boardCell(0, 1), b))
       .map(b => {
         match.board = b;
         const res = cellClick(boardCell(0, 1), match);
         expect(isCellRevealed(boardCell(0, 1), res.board)).toEqual(some(false));
         expect(res.state).toBe("playing");
       });
+  });
+
+  test("rightClick on a unrevealed cell should set cell as flagged", () => {
+    const res = cellRightClick(boardCell(1, 1), match);
+    expect(isCellFlagged(boardCell(1, 1), res.board)).toEqual(some(true));
   });
 
   test("rightClick on a revealed cell should not set cell as flagged", () => {
