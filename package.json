@@ -7,10 +7,15 @@
     "@types/node": "11.13.7",
     "@types/react": "16.8.14",
     "@types/react-dom": "16.8.4",
+    "fp-ts": "^1.17.1",
+    "jest-extended": "^0.11.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
-    "typescript": "3.4.4"
+    "typescript": "3.4.4",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-sonarts": "^1.9.0"
   },
   "scripts": {
     "start": "react-scripts start",
