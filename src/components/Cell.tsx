@@ -10,6 +10,17 @@ export interface CellProps {
   onContextMenu: () => void;
 }
 
+const adjacentMinesColors: Record<number, string> = {
+  1: "blue",
+  2: "green",
+  3: "red",
+  4: "purple",
+  5: "maroon",
+  6: "turquoise",
+  7: "black",
+  8: "grey"
+};
+
 export function Cell(props: CellProps) {
   function getTextContent(): string {
     if (props.isFlagged) {
@@ -27,6 +38,16 @@ export function Cell(props: CellProps) {
     return "";
   }
 
+  function getStyles(): React.CSSProperties {
+    if (props.isRevealed && props.adjacentMines > 0) {
+      return {
+        color: adjacentMinesColors[props.adjacentMines],
+        fontWeight: "bold"
+      };
+    }
+    return {};
+  }
+
   function handleContextMenu(e: React.MouseEvent) {
     props.onContextMenu();
     e.preventDefault();
@@ -35,6 +56,7 @@ export function Cell(props: CellProps) {
   return (
     <button
       className={props.isRevealed ? styles.revealed : ""}
+      style={getStyles()}
       onClick={props.onClick}
       onContextMenu={handleContextMenu}
     >
