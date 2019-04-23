@@ -96,4 +96,16 @@ describe("match test", () => {
       expect(isCellFlagged(boardCell(1, 1), res.board)).toEqual(some(false));
     });
   });
+
+  test("cellClick / cellRightClick on win match should return same match", () => {
+    match.state = "win";
+    expect(cellClick(boardCell(1, 1), match)).toBe(match);
+    expect(cellRightClick(boardCell(2, 2), match)).toBe(match);
+  });
+
+  test("cellClick / cellRightClick on game_over match should return same match", () => {
+    match.state = "game_over";
+    expect(cellClick(boardCell(1, 1), match)).toBe(match);
+    expect(cellRightClick(boardCell(2, 2), match)).toBe(match);
+  });
 });

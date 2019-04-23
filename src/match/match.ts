@@ -93,9 +93,14 @@ export function revealAllMines(board: Board): Board {
 }
 
 export function cellClick(cell: BoardCell, match: Match): Match {
+  if (match.state !== "playing") {
+    return match;
+  }
+
   if (isCellFlagged(cell, match.board).getOrElse(false)) {
     return match;
   }
+
   if (isGameOver(cell, match)) {
     return {
       board: revealAllMines(match.board),
@@ -104,16 +109,22 @@ export function cellClick(cell: BoardCell, match: Match): Match {
   }
 
   const revealedBoard = revealAdjacentEmptyCells(cell, match.board);
+
   if (isWin(revealedBoard)) {
     return {
       board: revealedBoard,
       state: "win"
     };
   }
+
   return { ...match, board: revealedBoard };
 }
 
 export function cellRightClick(cell: BoardCell, match: Match): Match {
+  if (match.state !== "playing") {
+    return match;
+  }
+
   if (isCellRevealed(cell, match.board).getOrElse(false)) {
     return match;
   }
