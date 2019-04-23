@@ -8,6 +8,7 @@ import {
   createBoard,
   getAdjacentCells,
   isCellEmpty,
+  isCellFlagged,
   isCellRevealed,
   setCellFlagged,
   setCellRevealed
@@ -90,6 +91,9 @@ export function revealAllMines(board: Board): Board {
 }
 
 export function cellClick(cell: BoardCell, match: Match): Match {
+  if (isCellFlagged(cell, match.board).getOrElse(false)) {
+    return match;
+  }
   if (isGameOver(cell, match)) {
     return {
       board: revealAllMines(match.board),

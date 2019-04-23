@@ -5,7 +5,8 @@ import {
   countAllAdjacentMines,
   createEmptyBoard,
   isCellRevealed,
-  placeMineInCell
+  placeMineInCell,
+  setCellFlagged
 } from "../board/board";
 import { cellClick, Match } from "./match";
 
@@ -65,6 +66,18 @@ describe("match test", () => {
         match.board.cellRevealStatus = cellRevealStatus;
         const res = cellClick(boardCell(0, 0), match);
         expect(res.state).toBe("win");
+      });
+  });
+
+  test("clicking on a flagged cell with mine should not reveal the cell", () => {
+    placeMineInCell(boardCell(0, 1), match.board)
+      .chain(b => placeMineInCell(boardCell(0, 2), b))
+      .chain(b => setCellFlagged(boardCell(0, 1), b))
+      .map(b => {
+        match.board = b;
+        const res = cellClick(boardCell(0, 1), match);
+        expect(isCellRevealed(boardCell(0, 1), res.board)).toEqual(some(false));
+        expect(res.state).toBe("playing");
       });
   });
 });
