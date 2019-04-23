@@ -39,9 +39,10 @@ export function BoardComponent(props: BoardComponentProps) {
   return (
     <div>
       {cells.map(row => (
-        <div className={styles["board-row"]}>
+        <div className={styles["board-row"]} key={row[0].row}>
           {row.map(cell => (
             <Cell
+              key={`${cell.row}.${cell.col}`}
               isRevealed={isCellRevealed(cell, props.match.board).getOrElse(
                 false
               )}
