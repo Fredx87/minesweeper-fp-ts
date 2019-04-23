@@ -48,19 +48,17 @@ function isWin(board: Board): boolean {
   return diff.length === 0;
 }
 
-function getEmptyAdjacentCells(cell: BoardCell, board: Board): BoardCell[] {
+function getUnrevealedAdjacentCells(
+  cell: BoardCell,
+  board: Board
+): BoardCell[] {
   return getAdjacentCells(cell, board).filter(
-    c =>
-      isCellEmpty(c, board).getOrElse(false) &&
-      !isCellRevealed(c, board).getOrElse(true)
+    c => !isCellRevealed(c, board).getOrElse(true)
   );
 }
 
-function revealAdjacentCells(cell: BoardCell, board: Board): Board {
-  const unrevealedAdj = getAdjacentCells(cell, board).filter(
-    c => !isCellRevealed(c, board).getOrElse(true)
-  );
-  return unrevealedAdj.reduce<Board>(
+function revealCells(cells: BoardCell[], board: Board): Board {
+  return cells.reduce<Board>(
     (b, c) => setCellRevealed(c, b).getOrElse(b),
     board
   );
@@ -71,18 +69,18 @@ function revealAdjacentEmptyCells(cell: BoardCell, board: Board): Board {
     return setCellRevealed(cell, board).getOrElse(board);
   }
   const toCheck: BoardCell[] = [cell];
-  const emptyRevealed: BoardCell[] = [cell];
   let res = board;
   while (toCheck.length > 0) {
     const c = toCheck.shift()!;
-    setCellRevealed(c, res).map(b => {
-      res = b;
-      emptyRevealed.push(c);
-      const adj = getEmptyAdjacentCells(c, b);
-      toCheck.push(...adj);
-    });
+    const unrevealedAdjacentCells = getUnrevealedAdjacentCells(c, res);
+    res = revealCells(unrevealedAdjacentCells.concat(c), res);
+    unrevealedAdjacentCells
+      .filter(c => isCellEmpty(c, res).getOrElse(false))
+      .forEach(c => {
+        toCheck.push(c);
+      });
   }
-  return emptyRevealed.reduce<Board>((b, c) => revealAdjacentCells(c, b), res);
+  return res;
 }
 
 export function revealAllMines(board: Board): Board {
