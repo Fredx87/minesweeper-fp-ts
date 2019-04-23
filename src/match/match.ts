@@ -112,6 +112,9 @@ export function cellClick(cell: BoardCell, match: Match): Match {
 }
 
 export function cellRightClick(cell: BoardCell, match: Match): Match {
+  if (isCellRevealed(cell, match.board)) {
+    return match;
+  }
   return {
     board: setCellFlagged(cell, match.board).getOrElse(match.board),
     state: match.state

@@ -4,11 +4,13 @@ import {
   boardCell,
   countAllAdjacentMines,
   createEmptyBoard,
+  isCellFlagged,
   isCellRevealed,
   placeMineInCell,
-  setCellFlagged
+  setCellFlagged,
+  setCellRevealed
 } from "../board/board";
-import { cellClick, Match } from "./match";
+import { cellClick, cellRightClick, Match } from "./match";
 
 describe("match test", () => {
   let match: Match;
@@ -79,5 +81,13 @@ describe("match test", () => {
         expect(isCellRevealed(boardCell(0, 1), res.board)).toEqual(some(false));
         expect(res.state).toBe("playing");
       });
+  });
+
+  test("rightClick on a revealed cell should not set cell as flagged", () => {
+    setCellRevealed(boardCell(1, 1), match.board).map(b => {
+      match.board = b;
+      const res = cellRightClick(boardCell(1, 1), match);
+      expect(isCellFlagged(boardCell(1, 1), res.board)).toEqual(some(false));
+    });
   });
 });
