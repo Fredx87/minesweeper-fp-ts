@@ -1,20 +1,10 @@
-button {
+.cell {
   width: 25px;
   height: 25px;
   line-height: 21px;
   font-size: 15px;
-  text-align: center;
-  padding: 0;
-  margin: 0;
-  background: lightgray;
-  border-width: 2px;
-  border-style: outset;
 }
 
-button:active {
-  border-style: inset;
-}
-
-button.revealed {
+.cell.revealed {
   border: 1px solid darkgray;
 }

@@ -1,0 +1,43 @@
+.container {
+  border-width: 3px;
+  border-style: outset;
+  padding: 8px;
+  margin: 10px auto;
+  background: lightgray;
+  display: inline-block;
+}
+
+.header {
+  border-width: 3px;
+  border-style: inset;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.header button {
+  width: 30px;
+  height: 30px;
+  line-height: 22px;
+  font-size: 18px;
+}
+
+.indicator {
+  border: 1px solid darkgray;
+  display: flex;
+  line-height: 22px;
+}
+
+.indicator > div {
+  padding: 2px 5px;
+}
+
+.indicator > div:first-child {
+  border-right: 1px solid darkgray;
+}
+
+.indicator > div:last-child {
+  min-width: 40px;
+  text-align: right;
+}

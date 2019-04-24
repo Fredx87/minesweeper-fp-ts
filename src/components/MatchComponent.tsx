@@ -1,9 +1,16 @@
 import { Either, left, right } from "fp-ts/lib/Either";
 import React, { useReducer, useState } from "react";
 import { BoardCell } from "../board/board";
-import { cellClick, cellRightClick, createMatch, Match } from "../match/match";
+import {
+  cellClick,
+  cellRightClick,
+  createMatch,
+  Match,
+  MatchState
+} from "../match/match";
 import { useInterval } from "../useInterval";
 import { BoardComponent } from "./BoardComponent";
+import styles from "./MatchComponent.module.css";
 
 export interface LeftClickAction {
   type: "LeftClick";
@@ -58,6 +65,12 @@ function reducer(
   }
 }
 
+const stateEmojiMap: Record<MatchState, string> = {
+  playing: "🙂",
+  win: "😎",
+  game_over: "😭"
+};
+
 export function MatchComponent() {
   const [state, dispatch] = useReducer(reducer, createMatch(9, 9, 10).run());
   const [elapsedTime, setElapsedTime] = useState("0");
@@ -82,10 +95,20 @@ export function MatchComponent() {
   return state.fold(
     error => <div>{`Cannot create match: ${error}`}</div>,
     m => (
-      <div>
-        <div>Status: {m.state}</div>
-        <div>Time: {elapsedTime}</div>
-        <div>Remaining Mines: {getRemainingMines()} </div>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.indicator}>
+            <div>💣</div>
+            <div>{getRemainingMines()}</div>
+          </div>
+          <div>
+            <button>{stateEmojiMap[m.state]}</button>
+          </div>
+          <div className={styles.indicator}>
+            <div>🕒</div>
+            <div>{elapsedTime}</div>
+          </div>
+        </div>
         <BoardComponent match={m} dispatch={dispatch} />
       </div>
     )

@@ -55,7 +55,7 @@ export function Cell(props: CellProps) {
 
   return (
     <button
-      className={props.isRevealed ? styles.revealed : ""}
+      className={`${styles.cell} ${props.isRevealed ? styles.revealed : ""}`}
       style={getStyles()}
       onClick={props.onClick}
       onContextMenu={handleContextMenu}
