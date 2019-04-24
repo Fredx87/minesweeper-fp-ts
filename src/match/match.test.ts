@@ -1,5 +1,5 @@
 import { makeBy } from "fp-ts/lib/Array";
-import { some } from "fp-ts/lib/Option";
+import { none, some } from "fp-ts/lib/Option";
 import {
   boardCell,
   countAllAdjacentMines,
@@ -18,8 +18,30 @@ describe("match test", () => {
   beforeEach(() => {
     match = {
       state: "playing",
-      board: createEmptyBoard(10, 10)
+      board: createEmptyBoard(10, 10),
+      startedTime: none,
+      endedTime: none
     };
+  });
+
+  test("clicking on a cell sets startedTime", () => {
+    placeMineInCell(boardCell(5, 5), match.board).map(b => {
+      match.board = countAllAdjacentMines(b);
+      const expected = Date.now() / 1000;
+      const newMatch = cellClick(boardCell(0, 0), match).run();
+      const result = newMatch.startedTime.getOrElse(0) / 1000;
+      expect(result).toBeCloseTo(expected);
+    });
+  });
+
+  test("right clicking on a cell sets startedTime", () => {
+    placeMineInCell(boardCell(5, 5), match.board).map(b => {
+      match.board = countAllAdjacentMines(b);
+      const expected = Date.now() / 1000;
+      const newMatch = cellRightClick(boardCell(0, 0), match).run();
+      const result = newMatch.startedTime.getOrElse(0) / 1000;
+      expect(result).toBeCloseTo(expected);
+    });
   });
 
   test("clicking on a mine reveals all mines and set state to game_over", () => {
@@ -27,10 +49,13 @@ describe("match test", () => {
       .chain(b => placeMineInCell(boardCell(6, 6), b))
       .map(b => {
         match.board = b;
-        const res = cellClick(boardCell(4, 4), match);
+        const expectedEndedTime = Date.now() / 1000;
+        const res = cellClick(boardCell(4, 4), match).run();
+        const resultingEndedTime = res.endedTime.getOrElse(0) / 1000;
         expect(isCellRevealed(boardCell(4, 4), res.board)).toEqual(some(true));
         expect(isCellRevealed(boardCell(6, 6), res.board)).toEqual(some(true));
         expect(res.state).toBe("game_over");
+        expect(resultingEndedTime).toBeCloseTo(expectedEndedTime);
       });
   });
 
@@ -40,7 +65,7 @@ describe("match test", () => {
       .chain(b => toggleCellFlagged(boardCell(2, 2), b))
       .map(b => {
         match.board = countAllAdjacentMines(b);
-        const res = cellClick(boardCell(0, 0), match);
+        const res = cellClick(boardCell(0, 0), match).run();
         expect(isCellRevealed(boardCell(0, 0), res.board)).toEqual(some(true));
         expect(isCellRevealed(boardCell(0, 1), res.board)).toEqual(some(true));
         expect(isCellRevealed(boardCell(0, 2), res.board)).toEqual(some(true));
@@ -67,8 +92,11 @@ describe("match test", () => {
         cellRevealStatus[1] = false;
         cellRevealStatus[2] = false;
         match.board.cellRevealStatus = cellRevealStatus;
-        const res = cellClick(boardCell(0, 0), match);
+        const expectedEndedTime = Date.now() / 1000;
+        const res = cellClick(boardCell(0, 0), match).run();
+        const resultingEndedTime = res.endedTime.getOrElse(0) / 1000;
         expect(res.state).toBe("win");
+        expect(resultingEndedTime).toBeCloseTo(expectedEndedTime);
       });
   });
 
@@ -78,34 +106,34 @@ describe("match test", () => {
       .chain(b => toggleCellFlagged(boardCell(0, 1), b))
       .map(b => {
         match.board = b;
-        const res = cellClick(boardCell(0, 1), match);
+        const res = cellClick(boardCell(0, 1), match).run();
         expect(isCellRevealed(boardCell(0, 1), res.board)).toEqual(some(false));
         expect(res.state).toBe("playing");
       });
   });
 
   test("rightClick on a unrevealed cell should set cell as flagged", () => {
-    const res = cellRightClick(boardCell(1, 1), match);
+    const res = cellRightClick(boardCell(1, 1), match).run();
     expect(isCellFlagged(boardCell(1, 1), res.board)).toEqual(some(true));
   });
 
   test("rightClick on a revealed cell should not set cell as flagged", () => {
     setCellRevealed(boardCell(1, 1), match.board).map(b => {
       match.board = b;
-      const res = cellRightClick(boardCell(1, 1), match);
+      const res = cellRightClick(boardCell(1, 1), match).run();
       expect(isCellFlagged(boardCell(1, 1), res.board)).toEqual(some(false));
     });
   });
 
   test("cellClick / cellRightClick on win match should return same match", () => {
     match.state = "win";
-    expect(cellClick(boardCell(1, 1), match)).toBe(match);
-    expect(cellRightClick(boardCell(2, 2), match)).toBe(match);
+    expect(cellClick(boardCell(1, 1), match).run()).toBe(match);
+    expect(cellRightClick(boardCell(2, 2), match).run()).toBe(match);
   });
 
   test("cellClick / cellRightClick on game_over match should return same match", () => {
     match.state = "game_over";
-    expect(cellClick(boardCell(1, 1), match)).toBe(match);
-    expect(cellRightClick(boardCell(2, 2), match)).toBe(match);
+    expect(cellClick(boardCell(1, 1), match).run()).toBe(match);
+    expect(cellRightClick(boardCell(2, 2), match).run()).toBe(match);
   });
 });

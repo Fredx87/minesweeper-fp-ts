@@ -40,12 +40,15 @@ function reducer(
 ): Either<string, Match> {
   switch (action.type) {
     case "LeftClick": {
-      return state.fold(l => left(l), m => right(cellClick(action.cell, m)));
+      return state.fold(
+        l => left(l),
+        m => right(cellClick(action.cell, m).run())
+      );
     }
     case "RightClick": {
       return state.fold(
         l => left(l),
-        m => right(cellRightClick(action.cell, m))
+        m => right(cellRightClick(action.cell, m).run())
       );
     }
     case "CreateMatch": {
@@ -55,7 +58,7 @@ function reducer(
 }
 
 export function MatchComponent() {
-  const [state, dispatch] = useReducer(reducer, createMatch(20, 20, 1).run());
+  const [state, dispatch] = useReducer(reducer, createMatch(9, 9, 10).run());
 
   return state.fold(
     error => <div>{`Cannot create match: ${error}`}</div>,
