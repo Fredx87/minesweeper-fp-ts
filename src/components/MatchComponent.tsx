@@ -37,6 +37,14 @@ export interface CreateMatchAction {
   mines: number;
 }
 
+export function createMatchAction(
+  rows: number,
+  cols: number,
+  mines: number
+): CreateMatchAction {
+  return { type: "CreateMatch", rows, cols, mines };
+}
+
 export type MatchAction =
   | LeftClickAction
   | RightClickAction
@@ -78,11 +86,11 @@ export function MatchComponent() {
   useInterval(() => {
     state
       .map(m => {
-        return m.startedTime.map(sT => {
+        return m.startedTime.fold(0, sT => {
           return m.endedTime.fold(Date.now() - sT, eT => eT - sT);
         });
       })
-      .map(e => e.map(n => setElapsedTime((n / 1000).toFixed(0))));
+      .map(n => setElapsedTime((n / 1000).toFixed(0)));
   }, 1000);
 
   function getRemainingMines(): number {
@@ -90,6 +98,10 @@ export function MatchComponent() {
       () => 0,
       m => m.board.minesIndexes.size - m.board.flaggedIndexes.size
     );
+  }
+
+  function handleButtonClick() {
+    dispatch(createMatchAction(9, 9, 10));
   }
 
   return state.fold(
@@ -102,7 +114,9 @@ export function MatchComponent() {
             <div>{getRemainingMines()}</div>
           </div>
           <div>
-            <button>{stateEmojiMap[m.state]}</button>
+            <button onClick={handleButtonClick}>
+              {stateEmojiMap[m.state]}
+            </button>
           </div>
           <div className={styles.indicator}>
             <div>🕒</div>
