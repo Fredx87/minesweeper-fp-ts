@@ -32,13 +32,12 @@ export function createMatch(
   mines: number
 ): IOEither<string, Match> {
   return createBoard(rows, cols, mines).map(board => {
-    const match: Match = {
+    return {
       state: "playing",
       board,
       startedTime: none,
       endedTime: none
-    };
-    return match;
+    } as Match;
   });
 }
 
@@ -51,6 +50,7 @@ function isWin(board: Board): boolean {
     (res, v, index) => (v === false ? res.concat(index) : res),
     []
   );
+  // tslint:disable-next-line: no-alphabetical-sort
   const minesIndexes = Array.from(board.minesIndexes).sort();
   const diff = difference(setoidNumber)(unRevealedIndexes, minesIndexes);
   return diff.length === 0;
@@ -81,9 +81,9 @@ function revealAdjacentEmptyCells(cell: BoardCell, board: Board): Board {
   const toCheck: BoardCell[] = [cell];
   let res = board;
   while (toCheck.length > 0) {
-    const c = toCheck.shift()!;
-    const unrevealedAdjacentCells = getUnrevealedAdjacentCells(c, res);
-    res = revealCells(unrevealedAdjacentCells.concat(c), res);
+    const current = toCheck.shift()!;
+    const unrevealedAdjacentCells = getUnrevealedAdjacentCells(current, res);
+    res = revealCells(unrevealedAdjacentCells.concat(current), res);
     unrevealedAdjacentCells
       .filter(c => isCellEmpty(c, res).getOrElse(false))
       .forEach(c => {

@@ -131,6 +131,7 @@ describe("match test", () => {
     expect(cellRightClick(boardCell(2, 2), match).run()).toBe(match);
   });
 
+  // tslint:disable-next-line: no-identical-functions
   test("cellClick / cellRightClick on game_over match should return same match", () => {
     match.state = "game_over";
     expect(cellClick(boardCell(1, 1), match).run()).toBe(match);

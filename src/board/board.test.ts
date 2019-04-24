@@ -51,7 +51,7 @@ describe("board functions", () => {
   let board: Board;
 
   beforeEach(() => {
-    board = createEmptyBoard(10, 15) as Board;
+    board = createEmptyBoard(10, 15);
   });
 
   test("getBoardCellIndex returns none when row less than 0", () => {
