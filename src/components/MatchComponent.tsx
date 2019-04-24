@@ -1,7 +1,8 @@
 import { Either, left, right } from "fp-ts/lib/Either";
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { BoardCell } from "../board/board";
 import { cellClick, cellRightClick, createMatch, Match } from "../match/match";
+import { useInterval } from "../useInterval";
 import { BoardComponent } from "./BoardComponent";
 
 export interface LeftClickAction {
@@ -59,12 +60,24 @@ function reducer(
 
 export function MatchComponent() {
   const [state, dispatch] = useReducer(reducer, createMatch(9, 9, 10).run());
+  const [elapsedTime, setElapsedTime] = useState("0");
+
+  useInterval(() => {
+    state
+      .map(m => {
+        return m.startedTime.map(sT => {
+          return m.endedTime.fold(Date.now() - sT, eT => eT - sT);
+        });
+      })
+      .map(e => e.map(n => setElapsedTime((n / 1000).toFixed(0))));
+  }, 1000);
 
   return state.fold(
     error => <div>{`Cannot create match: ${error}`}</div>,
     m => (
       <div>
         <div>Status: {m.state}</div>
+        <div>Time: {elapsedTime}</div>
         <BoardComponent match={m} dispatch={dispatch} />
       </div>
     )
