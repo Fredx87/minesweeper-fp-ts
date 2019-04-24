@@ -10,3 +10,10 @@ ReactDOM.render(<App />, document.getElementById("root"));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+// https://jmperezperez.com/outline-focus-ring-a11y/
+document.body.addEventListener("keyup", e => {
+  if (e.which === 9) {
+    /* tab */ document.documentElement.classList.remove("no-focus-outline");
+  }
+});

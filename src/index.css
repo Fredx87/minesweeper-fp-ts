@@ -15,6 +15,12 @@ code {
     monospace;
 }
 
+/* https://jmperezperez.com/outline-focus-ring-a11y/ */
+.no-focus-outline a:focus,
+.no-focus-outline button:focus {
+  outline: none;
+}
+
 button {
   text-align: center;
   padding: 0;
