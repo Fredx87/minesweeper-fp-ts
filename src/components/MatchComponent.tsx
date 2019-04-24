@@ -72,12 +72,20 @@ export function MatchComponent() {
       .map(e => e.map(n => setElapsedTime((n / 1000).toFixed(0))));
   }, 1000);
 
+  function getRemainingMines(): number {
+    return state.fold(
+      () => 0,
+      m => m.board.minesIndexes.size - m.board.flaggedIndexes.size
+    );
+  }
+
   return state.fold(
     error => <div>{`Cannot create match: ${error}`}</div>,
     m => (
       <div>
         <div>Status: {m.state}</div>
         <div>Time: {elapsedTime}</div>
+        <div>Remaining Mines: {getRemainingMines()} </div>
         <BoardComponent match={m} dispatch={dispatch} />
       </div>
     )
